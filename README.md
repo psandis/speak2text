@@ -1,14 +1,36 @@
 # speak2text
 
-Speech-to-text CLI tool. Transcribes audio and video files using OpenAI Whisper, Grok, or Gemini. Stores transcripts locally in SQLite.
+Speech-to-text CLI tool. Drop audio or video files into `input/`, run `s2t transcribe`, get transcripts in `output/`. Powered by OpenAI Whisper.
 
-## Features
+## How It Works
 
-- Transcribe any audio or video file to text
-- Multiple output formats: plain text, SRT subtitles, JSON with timestamps
-- Multiple provider support: OpenAI Whisper (default), Grok, Gemini
-- Local transcript history in SQLite
-- Audio preprocessing via ffmpeg for best accuracy
+1. Put any audio or video file in `input/`
+2. Run `s2t transcribe`
+3. Transcripts appear in `output/`
+
+**Supported natively** (sent directly to OpenAI): mp3, mp4, m4a, wav, webm
+
+**Requires ffmpeg** (converted to mp3 first): mkv, avi, mov, flac, ogg, and any other format
+
+Video files are always stripped to audio only — no video is uploaded.
+
+## Example
+
+```
+$ s2t transcribe
+Transcribing 1 file(s)...
+  chile_promo.mp3 — transcribing...
+  ✓ output/chile_promo.txt [19dee66d]
+
+Done.
+```
+
+Output:
+```
+September 11, 1973, a military coup overthrows the government in Chile, ending the longest
+democratic tradition in Latin America. It was a bloody, bloody coup. Chileans who lived
+through the coup and years of repression reflect on its meaning for us today.
+```
 
 ## Tech Stack
 
@@ -16,9 +38,9 @@ Speech-to-text CLI tool. Transcribes audio and video files using OpenAI Whisper,
 |------|---------|
 | TypeScript | Language |
 | Commander | CLI framework |
-| better-sqlite3 | Local transcript storage |
-| ffmpeg | Audio preprocessing |
-| OpenAI / Grok / Gemini SDKs | Transcription providers |
+| better-sqlite3 | Local transcript history |
+| OpenAI Whisper API | Transcription |
+| ffmpeg | Audio conversion (optional, only for unsupported formats) |
 | Vitest | Testing |
 | Biome | Lint & format |
 | pnpm | Package manager |
@@ -27,10 +49,10 @@ Speech-to-text CLI tool. Transcribes audio and video files using OpenAI Whisper,
 
 - Node.js 22+
 - pnpm
-- ffmpeg installed and available in PATH
-- API key for your chosen provider
+- OpenAI API key (or Grok / Gemini)
+- ffmpeg — only if using unsupported formats (mkv, avi, flac, ogg...)
 
-### Install ffmpeg
+### Install ffmpeg (if needed)
 
 **macOS**
 ```
@@ -55,23 +77,46 @@ pnpm add -g speak2text
 
 ## Configuration
 
+Store your API key in `~/.speak2text/.env`:
+
 ```
-s2t config set openai.key YOUR_KEY
-s2t config set grok.key YOUR_KEY
-s2t config set gemini.key YOUR_KEY
+OPENAI_API_KEY=your-key-here
+```
+
+Or set the default provider:
+
+```
 s2t config set provider openai
+```
+
+Other providers:
+
+```
+GROK_API_KEY=your-key-here
+GEMINI_API_KEY=your-key-here
 ```
 
 ## Usage
 
-### Transcribe a file
+### Transcribe all files in input/
 
 ```
-s2t transcribe audio.mp3
-s2t transcribe audio.mp3 --format srt
-s2t transcribe audio.mp3 --format json
-s2t transcribe audio.mp3 --provider gemini
-s2t transcribe audio.mp3 --out ./transcripts/
+s2t transcribe
+```
+
+### Transcribe a specific file
+
+```
+s2t transcribe path/to/audio.mp3
+```
+
+### Options
+
+```
+s2t transcribe --format srt
+s2t transcribe --format json
+s2t transcribe --provider gemini
+s2t transcribe --language fi
 ```
 
 ### Manage transcripts
@@ -95,20 +140,23 @@ s2t delete <id>
 
 | Provider | Flag | Notes |
 |----------|------|-------|
-| OpenAI Whisper | `--provider openai` | Default. Best price/accuracy balance. $0.006/min |
-| Grok | `--provider grok` | Real-time optimized. $0.05/min |
-| Gemini | `--provider gemini` | Multi-speaker detection |
-
-## Supported Formats
-
-Any format supported by ffmpeg: mp3, mp4, m4a, wav, ogg, flac, webm, mkv, mov, avi.
+| OpenAI Whisper | `--provider openai` | Default. $0.006/min |
+| Grok | `--provider grok` | OpenAI-compatible API |
+| Gemini | `--provider gemini` | OpenAI-compatible API |
 
 ## Storage
 
 Transcripts are stored locally in SQLite:
 
-- **macOS/Linux:** `~/.local/share/speak2text/transcripts.db`
-- **Windows:** `%APPDATA%\speak2text\transcripts.db`
+- **macOS/Linux:** `~/.speak2text/transcripts.db`
+
+Config and API keys:
+
+- **macOS/Linux:** `~/.speak2text/.env`
+
+## Roadmap
+
+- v0.2.0 — `--translate` flag: transcribe and translate to English in one step
 
 ## License
 

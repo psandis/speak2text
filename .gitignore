@@ -1,0 +1,16 @@
+node_modules/
+dist/
+*.js.map
+.env
+pnpm-lock.yaml
+input/*.mp3
+input/*.wav
+input/*.m4a
+input/*.aiff
+input/*.mp4
+input/*.webm
+input/*.flac
+input/*.ogg
+output/*.txt
+output/*.srt
+output/*.json
