@@ -24,7 +24,7 @@ const program = new Command();
 program
   .name("s2t")
   .description("Speech-to-text CLI — transcribe audio and video files")
-  .version("0.1.0");
+  .version("0.1.1");
 
 program
   .command("transcribe [file]")

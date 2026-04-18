@@ -1,5 +1,7 @@
 # speak2text
 
+[![npm](https://img.shields.io/npm/v/speak2text?style=flat-square)](https://www.npmjs.com/package/speak2text)
+
 Speech-to-text CLI tool. Drop audio or video files into `input/`, run `s2t transcribe`, get transcripts in `output/`. Powered by OpenAI Whisper.
 
 ## How It Works
@@ -12,7 +14,7 @@ Speech-to-text CLI tool. Drop audio or video files into `input/`, run `s2t trans
 
 **Requires ffmpeg** (converted to mp3 first): mkv, avi, mov, flac, ogg, and any other format
 
-Video files are always stripped to audio only — no video is uploaded.
+Unsupported formats are converted to audio via ffmpeg before upload. If ffmpeg cannot process the file, an error is shown.
 
 ## Example
 
@@ -40,7 +42,7 @@ through the coup and years of repression reflect on its meaning for us today.
 | Commander | CLI framework |
 | better-sqlite3 | Local transcript history |
 | OpenAI Whisper API | Transcription |
-| ffmpeg | Audio conversion (optional, only for unsupported formats) |
+| ffmpeg | Converts unsupported file formats before transcription (optional) |
 | Vitest | Testing |
 | Biome | Lint & format |
 | pnpm | Package manager |
@@ -50,7 +52,7 @@ through the coup and years of repression reflect on its meaning for us today.
 - Node.js 22+
 - pnpm
 - OpenAI API key (or Grok / Gemini)
-- ffmpeg — only if using unsupported formats (mkv, avi, flac, ogg...)
+- ffmpeg (only if using unsupported formats: mkv, avi, flac, ogg...)
 
 ### Install ffmpeg (if needed)
 
@@ -156,7 +158,7 @@ Config and API keys:
 
 ## Roadmap
 
-- v0.2.0 — `--translate` flag: transcribe and translate to English in one step
+- v0.2.0: `--translate` flag to transcribe and translate to English in one step
 
 ## License
 

@@ -30,14 +30,18 @@ export function convertToMp3(inputPath: string): string {
   const name = basename(inputPath, extname(inputPath));
   const outPath = join(tmpDir, `${name}-${randomUUID()}.mp3`);
 
-  execFileSync("ffmpeg", [
-    "-i", inputPath,
-    "-vn",
-    "-codec:a", "libmp3lame",
-    "-qscale:a", "2",
-    "-y",
-    outPath,
-  ], { stdio: "ignore" });
+  try {
+    execFileSync("ffmpeg", [
+      "-i", inputPath,
+      "-vn",
+      "-codec:a", "libmp3lame",
+      "-qscale:a", "2",
+      "-y",
+      outPath,
+    ], { stdio: "pipe" });
+  } catch {
+    throw new Error(`ffmpeg could not convert: ${inputPath}\nThe file may be corrupted, DRM-protected, or in an unsupported format.`);
+  }
 
   return outPath;
 }

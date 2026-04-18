@@ -1,6 +1,6 @@
 {
   "name": "speak2text",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Speech-to-text CLI tool with multi-provider support",
   "repository": {
     "type": "git",
