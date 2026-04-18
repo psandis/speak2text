@@ -154,11 +154,14 @@ s2t delete --all
 ```
 s2t db stats
 s2t db list
+s2t delete --all
 ```
 
 `s2t db stats` shows transcript count, database file size, provider breakdown, and oldest/newest dates.
 
 `s2t db list` shows each source file that has been transcribed, with transcript count and last transcribed date.
+
+`s2t delete --all` removes all stored transcripts.
 
 ### List supported languages
 
