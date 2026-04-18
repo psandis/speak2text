@@ -2,6 +2,9 @@ import { Command } from "commander";
 import chalk from "chalk";
 import { closeDb, initDb } from "./lib/db.js";
 import { ensureDataDir, getApiKey, loadConfig } from "./lib/config.js";
+import pkg from "../package.json" with { type: "json" };
+
+const { version } = pkg;
 
 function checkSetup(): void {
   const config = loadConfig();
@@ -24,7 +27,7 @@ const program = new Command();
 program
   .name("s2t")
   .description("Speech-to-text CLI — transcribe audio and video files")
-  .version("0.1.1");
+  .version(version);
 
 program
   .command("transcribe [file]")
@@ -33,13 +36,22 @@ program
   .option("--format <fmt>", "Output format: txt, srt, json (default: txt)")
   .option("--language <lang>", "Language hint (e.g. en, fi, de)")
   .option("--out <dir>", "Output directory (default: ./output)")
+  .option("--translate <lang>", "Translate to language code, e.g. en, fi, sv (OpenAI only)")
   .action(async (file, opts) => {
     const { transcribe } = await import("./commands/transcribe.js");
+    if (opts.translate) {
+      const { isValidLanguage } = await import("./lib/languages.js");
+      if (!isValidLanguage(opts.translate)) {
+        console.error(chalk.red(`Unknown language code: "${opts.translate}"`));
+        console.error(chalk.dim("Run: s2t languages"));
+        process.exit(1);
+      }
+    }
     ensureDataDir();
     checkSetup();
     initDb();
     try {
-      await transcribe(file, { provider: opts.provider, format: opts.format, language: opts.language, out: opts.out });
+      await transcribe(file, { provider: opts.provider, format: opts.format, language: opts.language, translate: opts.translate, out: opts.out });
     } finally {
       closeDb();
     }
@@ -105,6 +117,15 @@ program
     } finally {
       closeDb();
     }
+  });
+
+program
+  .command("languages")
+  .description("List all supported language codes")
+  .option("--json", "Output as JSON")
+  .action(async (opts) => {
+    const { languages } = await import("./commands/languages.js");
+    languages(!!opts.json);
   });
 
 const config = program.command("config").description("Manage configuration");

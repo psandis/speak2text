@@ -17,6 +17,7 @@ export interface TranscribeOptions {
   provider?: ProviderName;
   format?: TranscriptFormat;
   language?: string;
+  translate?: string;
   out?: string;
 }
 

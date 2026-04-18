@@ -14,6 +14,7 @@ export class GrokProvider implements TranscriptionProvider {
   }
 
   async transcribe(filePath: string, opts: TranscribeOptions): Promise<Omit<Transcript, "id" | "createdAt">> {
+    if (opts.translate) throw new Error(`Translation is not supported with the Grok provider. Use --provider openai.`);
     const format = opts.format ?? "txt";
 
     const response = await this.client.audio.transcriptions.create({

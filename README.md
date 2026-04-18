@@ -119,7 +119,12 @@ s2t transcribe --format srt
 s2t transcribe --format json
 s2t transcribe --provider gemini
 s2t transcribe --language fi
+s2t transcribe --translate
 ```
+
+`--translate` transcribes and translates to English in one step. OpenAI provider only.
+
+See [Supported Languages](#supported-languages) for valid language codes.
 
 ### Manage transcripts
 
@@ -156,9 +161,46 @@ Config and API keys:
 
 - **macOS/Linux:** `~/.speak2text/.env`
 
-## Roadmap
+## Supported Languages
 
-- v0.2.0: `--translate` flag to transcribe and translate to English in one step
+99 languages supported for transcription. Use the code with `--language` or `--translate`.
+
+| Code | Language | Code | Language | Code | Language |
+|------|----------|------|----------|------|----------|
+| af | Afrikaans | hi | Hindi | pt | Portuguese |
+| am | Amharic | hr | Croatian | ro | Romanian |
+| ar | Arabic | ht | Haitian Creole | ru | Russian |
+| as | Assamese | hu | Hungarian | sa | Sanskrit |
+| az | Azerbaijani | haw | Hawaiian | sd | Sindhi |
+| ba | Bashkir | hy | Armenian | si | Sinhala |
+| be | Belarusian | id | Indonesian | sk | Slovak |
+| bg | Bulgarian | is | Icelandic | sl | Slovenian |
+| bn | Bengali | it | Italian | sn | Shona |
+| bo | Tibetan | ja | Japanese | so | Somali |
+| br | Breton | jw | Javanese | sq | Albanian |
+| bs | Bosnian | ka | Georgian | sr | Serbian |
+| ca | Catalan | kk | Kazakh | su | Sundanese |
+| cs | Czech | km | Khmer | sv | Swedish |
+| cy | Welsh | kn | Kannada | sw | Swahili |
+| da | Danish | ko | Korean | ta | Tamil |
+| de | German | la | Latin | te | Telugu |
+| el | Greek | lb | Luxembourgish | tg | Tajik |
+| en | English | ln | Lingala | th | Thai |
+| es | Spanish | lo | Lao | tk | Turkmen |
+| et | Estonian | lt | Lithuanian | tl | Tagalog |
+| eu | Basque | lv | Latvian | tr | Turkish |
+| fa | Persian | mg | Malagasy | tt | Tatar |
+| fi | Finnish | mi | Maori | uk | Ukrainian |
+| fo | Faroese | mk | Macedonian | ur | Urdu |
+| fr | French | ml | Malayalam | uz | Uzbek |
+| gl | Galician | mn | Mongolian | vi | Vietnamese |
+| gu | Gujarati | mr | Marathi | yi | Yiddish |
+| ha | Hausa | ms | Malay | yo | Yoruba |
+| he | Hebrew | mt | Maltese | yue | Cantonese |
+| nn | Nynorsk | my | Myanmar | zh | Chinese |
+| no | Norwegian | ne | Nepali | | |
+| oc | Occitan | nl | Dutch | | |
+| pa | Punjabi | ps | Pashto | | |
 
 ## License
 
