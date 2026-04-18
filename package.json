@@ -1,6 +1,6 @@
 {
   "name": "speak2text",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "speak2text CLI tool. Transcribe and translate audio and video files using OpenAI Whisper.",
   "repository": {
     "type": "git",

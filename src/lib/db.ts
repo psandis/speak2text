@@ -91,6 +91,34 @@ export function deleteTranscript(id: string): boolean {
   return result.changes > 0;
 }
 
+export function deleteAllTranscripts(): number {
+  const result = getDb().prepare("DELETE FROM transcripts").run();
+  return result.changes;
+}
+
+export interface DbStats {
+  count: number;
+  byProvider: Record<string, number>;
+  oldest: string | null;
+  newest: string | null;
+}
+
+export function getDbStats(): DbStats {
+  const db = getDb();
+  const count = (db.prepare("SELECT COUNT(*) as n FROM transcripts").get() as { n: number }).n;
+  const providerRows = db.prepare("SELECT provider, COUNT(*) as n FROM transcripts GROUP BY provider").all() as { provider: string; n: number }[];
+  const byProvider: Record<string, number> = {};
+  for (const row of providerRows) byProvider[row.provider] = row.n;
+  const dates = db.prepare("SELECT MIN(created_at) as oldest, MAX(created_at) as newest FROM transcripts").get() as { oldest: string | null; newest: string | null };
+  return { count, byProvider, oldest: dates.oldest, newest: dates.newest };
+}
+
+export function getDistinctFiles(): { file: string; count: number; newest: string }[] {
+  return getDb()
+    .prepare("SELECT file, COUNT(*) as count, MAX(created_at) as newest FROM transcripts GROUP BY file ORDER BY newest DESC")
+    .all() as { file: string; count: number; newest: string }[];
+}
+
 function rowToTranscript(row: Record<string, unknown>): Transcript {
   return {
     id: row.id as string,

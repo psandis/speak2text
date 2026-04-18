@@ -106,14 +106,22 @@ program
   });
 
 program
-  .command("delete <id>")
-  .description("Delete a stored transcript")
-  .action(async (id) => {
-    const { remove } = await import("./commands/delete.js");
+  .command("delete [id]")
+  .description("Delete a stored transcript, or all with --all")
+  .option("--all", "Delete all stored transcripts")
+  .action(async (id, opts) => {
+    const { remove, removeAll } = await import("./commands/delete.js");
     ensureDataDir();
     initDb();
     try {
-      remove(id);
+      if (opts.all) {
+        removeAll();
+      } else if (id) {
+        remove(id);
+      } else {
+        console.error(chalk.red("Provide a transcript id or use --all"));
+        process.exit(1);
+      }
     } finally {
       closeDb();
     }
@@ -126,6 +134,36 @@ program
   .action(async (opts) => {
     const { languages } = await import("./commands/languages.js");
     languages(!!opts.json);
+  });
+
+const db = program.command("db").description("Manage the local transcript database");
+
+db
+  .command("stats")
+  .description("Show database statistics")
+  .action(async () => {
+    const { dbStats } = await import("./commands/db.js");
+    ensureDataDir();
+    initDb();
+    try {
+      dbStats();
+    } finally {
+      closeDb();
+    }
+  });
+
+db
+  .command("list")
+  .description("List files that have been transcribed")
+  .action(async () => {
+    const { dbList } = await import("./commands/db.js");
+    ensureDataDir();
+    initDb();
+    try {
+      dbList();
+    } finally {
+      closeDb();
+    }
   });
 
 const config = program.command("config").description("Manage configuration");

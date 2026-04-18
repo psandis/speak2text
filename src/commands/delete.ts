@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { deleteTranscript } from "../lib/db.js";
+import { deleteAllTranscripts, deleteTranscript } from "../lib/db.js";
 
 export function remove(id: string): void {
   const deleted = deleteTranscript(id);
@@ -10,4 +10,9 @@ export function remove(id: string): void {
   }
 
   console.log(chalk.green(`✓ Deleted ${id}`));
+}
+
+export function removeAll(): void {
+  const count = deleteAllTranscripts();
+  console.log(chalk.green(`✓ Deleted ${count} transcript(s)`));
 }
