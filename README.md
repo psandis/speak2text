@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/speak2text?style=flat-square)](https://www.npmjs.com/package/speak2text)
 
-Speech-to-text CLI tool. Drop audio or video files into `input/`, run `s2t transcribe`, get transcripts in `output/`. Powered by OpenAI Whisper.
+speak2text CLI tool. Drop audio or video files into `input/`, run `s2t transcribe`, get transcripts in `output/`. Powered by OpenAI Whisper.
 
 ## Installation
 
@@ -14,7 +14,7 @@ pnpm add -g speak2text
 
 - Node.js 22+
 - OpenAI API key (or Grok / Gemini)
-- ffmpeg — only needed for unsupported formats (mkv, avi, flac, ogg...)
+- ffmpeg - only needed for unsupported formats (mkv, avi, flac, ogg...)
 
 ### Install ffmpeg (if needed)
 
@@ -77,7 +77,7 @@ Processes all files in `input/`, writes transcripts to `output/`.
 ```
 $ s2t transcribe
 Transcribing 1 file(s)...
-  chile_promo.mp3 — transcribing...
+  chile_promo.mp3 - transcribing...
   ✓ output/chile_promo.txt [19dee66d]
 
 Done.
@@ -116,18 +116,18 @@ s2t transcribe --translate en
 s2t transcribe --translate sv
 ```
 
-`--translate en` uses Whisper's native translation endpoint — one call, fast and cheap.
+`--translate en` uses Whisper's native translation endpoint - one call, fast and cheap.
 
 `--translate <other>` transcribes first, then translates via GPT-4o-mini.
 
 Translation requires OpenAI provider.
 
-**Example — English audio translated to Finnish:**
+**Example - English audio translated to Finnish:**
 
 ```
 $ s2t transcribe --translate fi
 Transcribing 1 file(s)...
-  chile_promo.mp3 — transcribing...
+  chile_promo.mp3 - transcribing...
   ✓ output/chile_promo.txt [acc2fb12]
 
 Done.

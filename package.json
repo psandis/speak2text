@@ -1,7 +1,7 @@
 {
   "name": "speak2text",
-  "version": "0.2.0",
-  "description": "Speech-to-text CLI tool with multi-provider support",
+  "version": "0.2.1",
+  "description": "speak2text CLI tool. Transcribe and translate audio and video files using OpenAI Whisper.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/psandis/speak2text.git"
@@ -26,11 +26,14 @@
   "keywords": [
     "speech-to-text",
     "transcribe",
+    "translate",
     "whisper",
     "openai",
+    "ffmpeg",
     "cli",
     "s2t",
-    "speak2text"
+    "speak2text",
+    "openclaw"
   ],
   "author": "psandis",
   "license": "MIT",

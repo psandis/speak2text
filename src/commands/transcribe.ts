@@ -37,11 +37,11 @@ async function transcribeFile(absPath: string, opts: TranscribeOptions): Promise
 
   if (!isNativelySupported(absPath)) {
     checkFfmpeg();
-    process.stdout.write(chalk.dim(`  ${basename(absPath)} — converting with ffmpeg...`));
+    process.stdout.write(chalk.dim(`  ${basename(absPath)} -converting with ffmpeg...`));
     uploadPath = convertToMp3(absPath);
     converted = true;
   } else {
-    process.stdout.write(chalk.dim(`  ${basename(absPath)} — transcribing...`));
+    process.stdout.write(chalk.dim(`  ${basename(absPath)} -transcribing...`));
   }
 
   try {

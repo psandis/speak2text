@@ -26,7 +26,7 @@ const program = new Command();
 
 program
   .name("s2t")
-  .description("Speech-to-text CLI — transcribe audio and video files")
+  .description("speak2text CLI. Transcribe and translate audio and video files using OpenAI Whisper.")
   .version(version);
 
 program
