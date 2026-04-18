@@ -1,4 +1,4 @@
-import { readdirSync, writeFileSync } from "node:fs";
+import { readdirSync, statSync, writeFileSync } from "node:fs";
 import { basename, extname, join, resolve } from "node:path";
 import chalk from "chalk";
 import { insertTranscript } from "../lib/db.js";
@@ -19,6 +19,13 @@ function resolveInputFiles(file?: string): string[] {
   } catch {
     throw new Error(`No file specified and input/ directory not found at ${inputDir}`);
   }
+}
+
+function resolveOutFile(absPath: string, format: TranscriptFormat, out?: string): string {
+  if (!out) return join(resolve("output"), `${basename(absPath, extname(absPath))}.${format}`);
+  const resolved = resolve(out);
+  const isDir = out.endsWith("/") || ((() => { try { return statSync(resolved).isDirectory(); } catch { return false; } })());
+  return isDir ? join(resolved, `${basename(absPath, extname(absPath))}.${format}`) : resolved;
 }
 
 async function transcribeFile(absPath: string, opts: TranscribeOptions): Promise<void> {
@@ -42,8 +49,7 @@ async function transcribeFile(absPath: string, opts: TranscribeOptions): Promise
     const result = await provider.transcribe(uploadPath, opts);
     const transcript = insertTranscript({ ...result, file: absPath });
 
-    const outDir = opts.out ? resolve(opts.out) : resolve("output");
-    const outFile = join(outDir, `${basename(absPath, extname(absPath))}.${format}`);
+    const outFile = resolveOutFile(absPath, format, opts.out);
     writeFileSync(outFile, transcript.content, "utf-8");
 
     process.stdout.write("\n");

@@ -4,55 +4,17 @@
 
 Speech-to-text CLI tool. Drop audio or video files into `input/`, run `s2t transcribe`, get transcripts in `output/`. Powered by OpenAI Whisper.
 
-## How It Works
-
-1. Put any audio or video file in `input/`
-2. Run `s2t transcribe`
-3. Transcripts appear in `output/`
-
-**Supported natively** (sent directly to OpenAI): mp3, mp4, m4a, wav, webm
-
-**Requires ffmpeg** (converted to mp3 first): mkv, avi, mov, flac, ogg, and any other format
-
-Unsupported formats are converted to audio via ffmpeg before upload. If ffmpeg cannot process the file, an error is shown.
-
-## Example
+## Installation
 
 ```
-$ s2t transcribe
-Transcribing 1 file(s)...
-  chile_promo.mp3 — transcribing...
-  ✓ output/chile_promo.txt [19dee66d]
-
-Done.
+pnpm add -g speak2text
 ```
-
-Output:
-```
-September 11, 1973, a military coup overthrows the government in Chile, ending the longest
-democratic tradition in Latin America. It was a bloody, bloody coup. Chileans who lived
-through the coup and years of repression reflect on its meaning for us today.
-```
-
-## Tech Stack
-
-| Tool | Purpose |
-|------|---------|
-| TypeScript | Language |
-| Commander | CLI framework |
-| better-sqlite3 | Local transcript history |
-| OpenAI Whisper API | Transcription |
-| ffmpeg | Converts unsupported file formats before transcription (optional) |
-| Vitest | Testing |
-| Biome | Lint & format |
-| pnpm | Package manager |
 
 ## Requirements
 
 - Node.js 22+
-- pnpm
 - OpenAI API key (or Grok / Gemini)
-- ffmpeg (only if using unsupported formats: mkv, avi, flac, ogg...)
+- ffmpeg — only needed for unsupported formats (mkv, avi, flac, ogg...)
 
 ### Install ffmpeg (if needed)
 
@@ -71,24 +33,12 @@ sudo apt install ffmpeg
 winget install ffmpeg
 ```
 
-## Installation
-
-```
-pnpm add -g speak2text
-```
-
 ## Configuration
 
-Store your API key in `~/.speak2text/.env`:
+Create `~/.speak2text/.env` and add your API key:
 
 ```
 OPENAI_API_KEY=your-key-here
-```
-
-Or set the default provider:
-
-```
-s2t config set provider openai
 ```
 
 Other providers:
@@ -98,15 +48,48 @@ GROK_API_KEY=your-key-here
 GEMINI_API_KEY=your-key-here
 ```
 
+Set default provider (OpenAI is default):
+
+```
+s2t config set provider openai
+```
+
+## How It Works
+
+1. Put any audio or video file in `input/`
+2. Run `s2t transcribe`
+3. Transcripts appear in `output/`
+
+Files sent directly to OpenAI: mp3, mp4, m4a, wav, webm
+
+Other formats (mkv, avi, flac, ogg...) are converted to mp3 via ffmpeg first. If ffmpeg cannot process the file, an error is shown.
+
 ## Usage
 
-### Transcribe all files in input/
+### Transcribe
 
 ```
 s2t transcribe
 ```
 
-### Transcribe a specific file
+Processes all files in `input/`, writes transcripts to `output/`.
+
+```
+$ s2t transcribe
+Transcribing 1 file(s)...
+  chile_promo.mp3 — transcribing...
+  ✓ output/chile_promo.txt [19dee66d]
+
+Done.
+```
+
+Output:
+```
+September 11, 1973, a military coup overthrows the government in Chile, ending the longest
+democratic tradition in Latin America. It was a bloody, bloody coup.
+```
+
+Transcribe a single file:
 
 ```
 s2t transcribe path/to/audio.mp3
@@ -117,14 +100,44 @@ s2t transcribe path/to/audio.mp3
 ```
 s2t transcribe --format srt
 s2t transcribe --format json
-s2t transcribe --provider gemini
 s2t transcribe --language fi
-s2t transcribe --translate
+s2t transcribe --translate fi
+s2t transcribe --translate en
+s2t transcribe --provider gemini
+s2t transcribe --out my-transcript.txt
+s2t transcribe --out transcripts/
 ```
 
-`--translate` transcribes and translates to English in one step. OpenAI provider only.
+### Translation
 
-See [Supported Languages](#supported-languages) for valid language codes.
+```
+s2t transcribe --translate fi
+s2t transcribe --translate en
+s2t transcribe --translate sv
+```
+
+`--translate en` uses Whisper's native translation endpoint — one call, fast and cheap.
+
+`--translate <other>` transcribes first, then translates via GPT-4o-mini.
+
+Translation requires OpenAI provider.
+
+**Example — English audio translated to Finnish:**
+
+```
+$ s2t transcribe --translate fi
+Transcribing 1 file(s)...
+  chile_promo.mp3 — transcribing...
+  ✓ output/chile_promo.txt [acc2fb12]
+
+Done.
+```
+
+Output:
+```
+11. syyskuuta 1973 sotilasvallankaappaus kaataa hallituksen Chilessä, mikä päättää
+Latinalaisen Amerikan pisimmän demokraattisen perinteen. Se oli verinen, verinen vallankaappaus.
+```
 
 ### Manage transcripts
 
@@ -133,6 +146,12 @@ s2t list
 s2t show <id>
 s2t export <id> --format srt
 s2t delete <id>
+```
+
+### List supported languages
+
+```
+s2t languages
 ```
 
 ## Output Formats
@@ -156,14 +175,11 @@ s2t delete <id>
 Transcripts are stored locally in SQLite:
 
 - **macOS/Linux:** `~/.speak2text/transcripts.db`
-
-Config and API keys:
-
-- **macOS/Linux:** `~/.speak2text/.env`
+- **macOS/Linux config:** `~/.speak2text/.env`
 
 ## Supported Languages
 
-99 languages supported for transcription. Use the code with `--language` or `--translate`.
+99 languages supported. Use the code with `--language` or `--translate`.
 
 | Code | Language | Code | Language | Code | Language |
 |------|----------|------|----------|------|----------|
@@ -201,6 +217,19 @@ Config and API keys:
 | no | Norwegian | ne | Nepali | | |
 | oc | Occitan | nl | Dutch | | |
 | pa | Punjabi | ps | Pashto | | |
+
+## Tech Stack
+
+| Tool | Purpose |
+|------|---------|
+| TypeScript | Language |
+| Commander | CLI framework |
+| better-sqlite3 | Local transcript history |
+| OpenAI Whisper API | Transcription |
+| ffmpeg | Converts unsupported formats before transcription (optional) |
+| Vitest | Testing |
+| Biome | Lint & format |
+| pnpm | Package manager |
 
 ## License
 
